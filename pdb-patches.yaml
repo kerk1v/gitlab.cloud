@@ -1,12 +1,6 @@
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: not-used
-$patch: delete
----
-apiVersion: policy/v1
-kind: PodDisruptionBudget
-metadata:
   name: gitlab-gitaly
 ---
 apiVersion: policy/v1

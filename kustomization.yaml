@@ -4,15 +4,40 @@ kind: Kustomization
 resources:
 - gitlab-application.yaml
 
-patchesStrategicMerge:
-- pdb-patches.yaml
-
 patches:
-- patch: |-
-    - op: replace
-      path: /apiVersion
-      value: policy/v1
+- path: pdb-patches.yaml
   target:
+    kind: PodDisruptionBudget
     group: policy
     version: v1beta1
+    name: gitlab-gitaly
+- path: pdb-patches.yaml
+  target:
     kind: PodDisruptionBudget
+    group: policy
+    version: v1beta1
+    name: gitlab-sidekiq-all-in-1-v1
+- path: pdb-patches.yaml
+  target:
+    kind: PodDisruptionBudget
+    group: policy
+    version: v1beta1
+    name: gitlab-webservice-default
+- path: pdb-patches.yaml
+  target:
+    kind: PodDisruptionBudget
+    group: policy
+    version: v1beta1
+    name: gitlab-registry-v1
+- path: pdb-patches.yaml
+  target:
+    kind: PodDisruptionBudget
+    group: policy
+    version: v1beta1
+    name: gitlab-minio-v1
+- path: pdb-patches.yaml
+  target:
+    kind: PodDisruptionBudget
+    group: policy
+    version: v1beta1
+    name: gitlab-gitlab-shell
