@@ -5,10 +5,10 @@ metadata:
   namespace: argocd
 spec:
   project: default
-  source:
-    chart: gitlab
-    repoURL: https://charts.gitlab.io
+  sources:
+  - repoURL: https://charts.gitlab.io
     targetRevision: 5.9.5
+    chart: gitlab
     helm:
       releaseName: gitlab
       values: |
@@ -44,6 +44,18 @@ spec:
               annotations:
                 kubernetes.io/ingress.class: traefik
                 cert-manager.io/cluster-issuer: letsencrypt
+  - repoURL: file://./
+    targetRevision: HEAD
+    path: .
+    kustomize:
+      patches:
+      - patch: |
+          apiVersion: policy/v1
+          kind: PodDisruptionBudget
+        target:
+          group: policy
+          version: v1beta1
+          kind: PodDisruptionBudget
   destination:
     server: https://kubernetes.default.svc
     namespace: gitlab
