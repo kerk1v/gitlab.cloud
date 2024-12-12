@@ -46,22 +46,22 @@ spec:
                 cert-manager.io/cluster-issuer: letsencrypt
           gitaly:
             pdb:
-              apiVersion: policy/v1
+              enabled: false
           webservice:
             pdb:
-              apiVersion: policy/v1
+              enabled: false
           sidekiq:
             pdb:
-              apiVersion: policy/v1
+              enabled: false
           registry:
             pdb:
-              apiVersion: policy/v1
+              enabled: false
           minio:
             pdb:
-              apiVersion: policy/v1
+              enabled: false
           gitlab-shell:
             pdb:
-              apiVersion: policy/v1
+              enabled: false
   destination:
     server: https://kubernetes.default.svc
     namespace: gitlab
