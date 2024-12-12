@@ -45,9 +45,23 @@ spec:
                 kubernetes.io/ingress.class: traefik
                 cert-manager.io/cluster-issuer: letsencrypt
           gitaly:
-            common:
-              labels:
-                app: gitaly
+            pdb:
+              apiVersion: policy/v1
+          webservice:
+            pdb:
+              apiVersion: policy/v1
+          sidekiq:
+            pdb:
+              apiVersion: policy/v1
+          registry:
+            pdb:
+              apiVersion: policy/v1
+          minio:
+            pdb:
+              apiVersion: policy/v1
+          gitlab-shell:
+            pdb:
+              apiVersion: policy/v1
   destination:
     server: https://kubernetes.default.svc
     namespace: gitlab
