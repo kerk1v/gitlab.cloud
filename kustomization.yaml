@@ -1,0 +1,43 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- gitlab-application.yaml
+
+patches:
+- path: pdb-patch.yaml
+  target:
+    group: policy
+    version: v1beta1
+    kind: PodDisruptionBudget
+    name: gitlab-gitaly
+- path: pdb-patch.yaml
+  target:
+    group: policy
+    version: v1beta1
+    kind: PodDisruptionBudget
+    name: gitlab-sidekiq-all-in-1-v1
+- path: pdb-patch.yaml
+  target:
+    group: policy
+    version: v1beta1
+    kind: PodDisruptionBudget
+    name: gitlab-webservice-default
+- path: pdb-patch.yaml
+  target:
+    group: policy
+    version: v1beta1
+    kind: PodDisruptionBudget
+    name: gitlab-registry-v1
+- path: pdb-patch.yaml
+  target:
+    group: policy
+    version: v1beta1
+    kind: PodDisruptionBudget
+    name: gitlab-minio-v1
+- path: pdb-patch.yaml
+  target:
+    group: policy
+    version: v1beta1
+    kind: PodDisruptionBudget
+    name: gitlab-gitlab-shell
