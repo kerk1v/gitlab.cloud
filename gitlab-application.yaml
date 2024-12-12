@@ -44,27 +44,14 @@ spec:
               annotations:
                 kubernetes.io/ingress.class: traefik
                 cert-manager.io/cluster-issuer: letsencrypt
-          gitaly:
-            pdb:
-              enabled: false
-          webservice:
-            pdb:
-              enabled: false
-          sidekiq:
-            pdb:
-              enabled: false
-          registry:
-            pdb:
-              enabled: false
-          minio:
-            pdb:
-              enabled: false
-          gitlab-shell:
-            pdb:
-              enabled: false
   destination:
     server: https://kubernetes.default.svc
     namespace: gitlab
+  ignoreDifferences:
+  - group: policy
+    kind: PodDisruptionBudget
+    jsonPointers:
+    - /apiVersion
   syncPolicy:
     automated:
       prune: true
