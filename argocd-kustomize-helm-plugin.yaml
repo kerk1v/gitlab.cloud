@@ -16,16 +16,17 @@ data:
         command: ["/bin/sh", "-c"]
         args:
           - |
-            helm repo add gitlab https://charts.gitlab.io/
+            helm repo add gitlab https://charts.gitlab.io
             helm repo update
       generate:
         command: ["/bin/sh", "-c"]
         args:
           - |
+            set -e
             helm template gitlab gitlab/gitlab \
-              --version $HELM_VERSION \
-              -f $ARGOCD_ENV_HELM_VALUES \
-              --namespace $ARGOCD_APP_NAMESPACE |
+              --version ${HELM_VERSION} \
+              --namespace ${ARGOCD_APP_NAMESPACE} \
+              --values <(echo "${HELM_VALUES}") > all.yaml
             kustomize build
 ---
 apiVersion: apps/v1
@@ -51,6 +52,8 @@ spec:
       containers:
       - name: argocd-repo-server
         image: quay.io/argoproj/argocd:v2.9.3
+        command: ["/usr/local/bin/argocd-repo-server"]
+        args: ["--redis", "argocd-redis:6379"]
         volumeMounts:
         - name: custom-tools
           mountPath: /usr/local/bin/helm
@@ -61,12 +64,20 @@ spec:
         - name: plugin-kustomize-helm
           mountPath: /home/argocd/cmp-server/config/plugin.yaml
           subPath: plugin.yaml
+        - name: helm-cache
+          mountPath: /root/.cache/helm
+        - name: helm-config
+          mountPath: /root/.config/helm
       volumes:
       - name: custom-tools
         emptyDir: {}
       - name: plugin-kustomize-helm
         configMap:
           name: argocd-kustomize-helm-plugin
+      - name: helm-cache
+        emptyDir: {}
+      - name: helm-config
+        emptyDir: {}
       initContainers:
       - name: download-tools
         image: alpine:3.18

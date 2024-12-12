@@ -7,13 +7,15 @@ spec:
   project: default
   source:
     path: .
-    repoURL: https://charts.gitlab.io/
-    targetRevision: HEAD
     plugin:
       name: kustomize-helm-plugin
       env:
         - name: HELM_VERSION
           value: "5.9.5"
+        - name: HELM_REPO_URL
+          value: "https://charts.gitlab.io"
+        - name: HELM_CHART_NAME
+          value: "gitlab"
         - name: HELM_VALUES
           value: |
             global:
