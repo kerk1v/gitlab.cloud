@@ -1,0 +1,80 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-kustomize-helm-plugin
+  namespace: argocd
+  labels:
+    app.kubernetes.io/part-of: argocd
+data:
+  plugin.yaml: |
+    apiVersion: argoproj.io/v1alpha1
+    kind: ConfigManagementPlugin
+    metadata:
+      name: kustomize-helm-plugin
+    spec:
+      init:
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            helm repo add gitlab https://charts.gitlab.io/
+            helm repo update
+      generate:
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            helm template gitlab gitlab/gitlab \
+              --version $HELM_VERSION \
+              -f $ARGOCD_ENV_HELM_VALUES \
+              --namespace $ARGOCD_APP_NAMESPACE |
+            kustomize build
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: argocd-repo-server-patch
+  namespace: argocd
+  labels:
+    app.kubernetes.io/component: repo-server
+    app.kubernetes.io/name: argocd-repo-server
+    app.kubernetes.io/part-of: argocd
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: argocd-repo-server
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: repo-server
+        app.kubernetes.io/name: argocd-repo-server
+        app.kubernetes.io/part-of: argocd
+    spec:
+      containers:
+      - name: argocd-repo-server
+        image: quay.io/argoproj/argocd:v2.9.3
+        volumeMounts:
+        - name: custom-tools
+          mountPath: /usr/local/bin/helm
+          subPath: helm
+        - name: custom-tools
+          mountPath: /usr/local/bin/kustomize
+          subPath: kustomize
+        - name: plugin-kustomize-helm
+          mountPath: /home/argocd/cmp-server/config/plugin.yaml
+          subPath: plugin.yaml
+      volumes:
+      - name: custom-tools
+        emptyDir: {}
+      - name: plugin-kustomize-helm
+        configMap:
+          name: argocd-kustomize-helm-plugin
+      initContainers:
+      - name: download-tools
+        image: alpine:3.18
+        command: [sh, -c]
+        args:
+        - |
+          wget https://get.helm.sh/helm-v3.13.2-linux-amd64.tar.gz -O - | tar -xz && mv linux-amd64/helm /custom-tools/
+          wget https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/v5.2.1/kustomize_v5.2.1_linux_amd64.tar.gz -O - | tar -xz && mv kustomize /custom-tools/
+        volumeMounts:
+        - mountPath: /custom-tools
+          name: custom-tools

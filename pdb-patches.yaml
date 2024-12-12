@@ -1,0 +1,35 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: not-used
+$patch: delete
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: gitlab-gitaly
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: gitlab-sidekiq-all-in-1-v1
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: gitlab-webservice-default
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: gitlab-registry-v1
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: gitlab-minio-v1
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: gitlab-gitlab-shell
