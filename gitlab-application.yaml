@@ -6,50 +6,44 @@ metadata:
 spec:
   project: default
   source:
-    path: .
-    plugin:
-      name: kustomize-helm-plugin
-      env:
-        - name: HELM_VERSION
-          value: "5.9.5"
-        - name: HELM_REPO_URL
-          value: "https://charts.gitlab.io"
-        - name: HELM_CHART_NAME
-          value: "gitlab"
-        - name: HELM_VALUES
-          value: |
-            global:
-              hosts:
-                domain: gitlab.conxtor.com
-                gitlab:
-                  name: gitlab.conxtor.com
-              initialRootPassword:
-                secret: gitlab-root-password
-                key: password
-              ingress:
-                enabled: true
-                provider: traefik
-                configureCertmanager: true
-                annotations:
-                  kubernetes.io/ingress.class: traefik
-                  cert-manager.io/cluster-issuer: letsencrypt
-                  traefik.ingress.kubernetes.io/router.tls: "true"
-            certmanager:
-              install: false
-            certmanager-issuer:
-              email: admin@conxtor.com
-            nginx-ingress:
-              enabled: false
+    chart: gitlab
+    repoURL: https://charts.gitlab.io
+    targetRevision: 5.9.5
+    helm:
+      releaseName: gitlab
+      values: |
+        global:
+          hosts:
+            domain: gitlab.conxtor.com
             gitlab:
-              webservice:
-                ingress:
-                  enabled: true
-                  tls:
-                    enabled: true
-                    secretName: gitlab-tls
-                  annotations:
-                    kubernetes.io/ingress.class: traefik
-                    cert-manager.io/cluster-issuer: letsencrypt
+              name: gitlab.conxtor.com
+          initialRootPassword:
+            secret: gitlab-root-password
+            key: password
+          ingress:
+            enabled: true
+            provider: traefik
+            configureCertmanager: true
+            annotations:
+              kubernetes.io/ingress.class: traefik
+              cert-manager.io/cluster-issuer: letsencrypt
+              traefik.ingress.kubernetes.io/router.tls: "true"
+        certmanager:
+          install: false
+        certmanager-issuer:
+          email: admin@conxtor.com
+        nginx-ingress:
+          enabled: false
+        gitlab:
+          webservice:
+            ingress:
+              enabled: true
+              tls:
+                enabled: true
+                secretName: gitlab-tls
+              annotations:
+                kubernetes.io/ingress.class: traefik
+                cert-manager.io/cluster-issuer: letsencrypt
   destination:
     server: https://kubernetes.default.svc
     namespace: gitlab

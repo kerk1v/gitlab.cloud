@@ -5,39 +5,10 @@ resources:
 - gitlab-application.yaml
 
 patches:
-- path: patches/gitlab-gitaly-pdb.yaml
-  target:
+- patch: |
+    apiVersion: policy/v1
     kind: PodDisruptionBudget
+  target:
     group: policy
     version: v1beta1
-    name: gitlab-gitaly
-- path: patches/gitlab-sidekiq-pdb.yaml
-  target:
     kind: PodDisruptionBudget
-    group: policy
-    version: v1beta1
-    name: gitlab-sidekiq-all-in-1-v1
-- path: patches/gitlab-webservice-pdb.yaml
-  target:
-    kind: PodDisruptionBudget
-    group: policy
-    version: v1beta1
-    name: gitlab-webservice-default
-- path: patches/gitlab-registry-pdb.yaml
-  target:
-    kind: PodDisruptionBudget
-    group: policy
-    version: v1beta1
-    name: gitlab-registry-v1
-- path: patches/gitlab-minio-pdb.yaml
-  target:
-    kind: PodDisruptionBudget
-    group: policy
-    version: v1beta1
-    name: gitlab-minio-v1
-- path: patches/gitlab-shell-pdb.yaml
-  target:
-    kind: PodDisruptionBudget
-    group: policy
-    version: v1beta1
-    name: gitlab-gitlab-shell

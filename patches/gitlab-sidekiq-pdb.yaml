@@ -1,4 +1,0 @@
-apiVersion: policy/v1
-kind: PodDisruptionBudget
-metadata:
-  name: gitlab-sidekiq-all-in-1-v1
