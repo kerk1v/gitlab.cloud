@@ -11,7 +11,7 @@ spec:
     targetRevision: 5.9.5
     helm:
       releaseName: gitlab
-      values:
+      values: |
         global:
           hosts:
             domain: gitlab.conxtor.com
@@ -29,11 +29,11 @@ spec:
               cert-manager.io/cluster-issuer: letsencrypt
               traefik.ingress.kubernetes.io/router.tls: "true"
         certmanager:
-          install: false  # Using existing cert-manager
+          install: false
         certmanager-issuer:
           email: admin@conxtor.com
         nginx-ingress:
-          enabled: false  # Using Traefik
+          enabled: false
         gitlab:
           webservice:
             ingress:
